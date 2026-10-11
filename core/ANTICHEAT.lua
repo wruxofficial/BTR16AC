@@ -4,7 +4,6 @@ local ServerStorage = game:GetService("ServerStorage")
 local Lighting = game:GetService("Lighting")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Debris = game:GetService("Debris")
-local ChatService = game:GetService("Chat")
 
 local WHITELIST_NAMES = {
 	["puturnamehere"] = true,
@@ -196,20 +195,6 @@ local function GetFullPath(object)
 	return path
 end
 
-local function SendSystemMessageToPlayer(player, text)
-	local character = player.Character
-	if not character then return end
-	pcall(function()
-		ChatService:Chat(character, text, Enum.ChatColor.Red)
-	end)
-end
-
-local function SendSystemMessage(text)
-	for _, player in pairs(Players:GetPlayers()) do
-		SendSystemMessageToPlayer(player, text)
-	end
-end
-
 local function LogTrigger(reason, player)
 	local name = "Unknown"
 	if player then
@@ -253,17 +238,6 @@ local function RegisterBackup(object, clone, path)
 	if path then
 		BackupByPath[path] = clone
 	end
-end
-
-local function BackupRecursive(object, depth)
-	if depth > 10 then return end
-	pcall(function()
-		local clone = object:Clone()
-		if clone then
-			clone.Parent = MapBackup
-			RegisterBackup(object, clone, GetFullPath(object))
-		end
-	end)
 end
 
 local function CreateBackups()
@@ -767,10 +741,6 @@ Players.PlayerAdded:connect(function(player)
 	if not pgui then return end
 
 	player.CharacterAdded:connect(function(character)
-		spawn(function()
-			wait(2)
-			SendSystemMessageToPlayer(player, "[SERVER] : BTR16AC LOADED any cheating is not allowed any attempt to cheat will be restricted and exploiter will be screamed")
-		end)
 		SetupCharacter(player, character)
 	end)
 
@@ -779,13 +749,6 @@ Players.PlayerAdded:connect(function(player)
 			SetupCharacter(player, player.Character)
 		end)
 	end
-
-	spawn(function()
-		wait(5)
-		if player.Parent then
-			SendSystemMessageToPlayer(player, "[SERVER] : BTR16AC LOADED any cheating is not allowed any attempt to cheat will be restricted and exploiter will be screamed")
-		end
-	end)
 
 	local pguiConnections = {}
 	local removed = false
