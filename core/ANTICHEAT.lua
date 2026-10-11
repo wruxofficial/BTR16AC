@@ -739,8 +739,13 @@ end
 local function KillMessageOrHint(instance)
 	if not instance then return false end
 	if instance:IsA("Message") or instance:IsA("Hint") then
-		pcall(function()
-			instance:Destroy()
+		spawn(function()
+			wait(1)
+			if instance then
+				pcall(function()
+					instance:Destroy()
+				end)
+			end
 		end)
 		return true
 	end
@@ -827,7 +832,7 @@ Players.PlayerAdded:connect(function(player)
 end)
 
 Workspace.DescendantAdded:connect(function(desc)
-	if KillMessageOrHint(desc) then return end
+	KillMessageOrHint(desc)
 end)
 
 Workspace.DescendantRemoving:connect(function(desc)
