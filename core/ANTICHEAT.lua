@@ -736,6 +736,17 @@ local function ScanForMessagesInPlayerGui(player)
 	CleanMessagesAndHints(pgui)
 end
 
+local function KillMessageOrHint(instance)
+	if not instance then return false end
+	if instance:IsA("Message") or instance:IsA("Hint") then
+		pcall(function()
+			instance:Destroy()
+		end)
+		return true
+	end
+	return false
+end
+
 Players.PlayerAdded:connect(function(player)
 	local pgui = player:WaitForChild("PlayerGui", 10)
 	if not pgui then return end
@@ -757,18 +768,7 @@ Players.PlayerAdded:connect(function(player)
 		if removed then return end
 		if IsRestoring then return end
 		if IsProtected(player) then return end
-		if child:IsA("Message") then
-			pcall(function()
-				child:Destroy()
-			end)
-			return
-		end
-		if child:IsA("Hint") then
-			pcall(function()
-				child:Destroy()
-			end)
-			return
-		end
+		if KillMessageOrHint(child) then return end
 		if not child:IsA("ScreenGui")
 			and not child:IsA("BillboardGui")
 			and not child:IsA("SurfaceGui")
@@ -788,12 +788,7 @@ Players.PlayerAdded:connect(function(player)
 		if removed then return end
 		if IsRestoring then return end
 		if IsProtected(player) then return end
-		if desc:IsA("Message") or desc:IsA("Hint") then
-			pcall(function()
-				desc:Destroy()
-			end)
-			return
-		end
+		if KillMessageOrHint(desc) then return end
 		if not desc:IsA("TextButton")
 			and not desc:IsA("ImageButton")
 			and not desc:IsA("TextBox") then
@@ -832,11 +827,7 @@ Players.PlayerAdded:connect(function(player)
 end)
 
 Workspace.DescendantAdded:connect(function(desc)
-	if desc:IsA("Message") or desc:IsA("Hint") then
-		pcall(function()
-			desc:Destroy()
-		end)
-	end
+	if KillMessageOrHint(desc) then return end
 end)
 
 Workspace.DescendantRemoving:connect(function(desc)
