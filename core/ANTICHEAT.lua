@@ -740,7 +740,7 @@ local function KillMessageOrHint(instance)
 	if not instance then return false end
 	if instance:IsA("Message") or instance:IsA("Hint") then
 		spawn(function()
-			wait(1)
+			wait(0.1)
 			if instance then
 				pcall(function()
 					instance:Destroy()
